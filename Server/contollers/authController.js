@@ -10,8 +10,8 @@ const register = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const username = sanitizeInput(req.body.username);
-    const password = sanitizeInput(req.body.password);
+    const username = sanitizeInput(req.body.userName);
+    const password = sanitizeInput(req.body.userPassword);
     const hashedPassword = await bcrypt.hash(password, 12);
     console.log(" auth controller Hashed password:", hashedPassword, username);
     await createUser(username, hashedPassword);
@@ -25,8 +25,8 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const username = sanitizeInput(req.body.username);
-    const password = req.body.password;
+    const username = sanitizeInput(req.body.userName);
+    const password = req.body.userPassword;
 
     const user = await getUserByUsername(username);
     if (!user) return res.status(401).json({ error: "Invalid credentials." });
