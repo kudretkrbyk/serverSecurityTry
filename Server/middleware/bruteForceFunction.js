@@ -1,20 +1,17 @@
-let attempts = {};
+// middleware/bruteForceFunction.js
+const rateLimit = require("express-rate-limit");
 
-const bruteForceGuard = (req, res, next) => {
-  const ip = req.ip;
-  attempts[ip] = attempts[ip] || { count: 0, time: Date.now() };
+// Sadece login endpoint'i için geçerli limiter
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 dakika içinde
+  max: 5, // en fazla 5 deneme
+  message: {
+    status: 429,
+    message:
+      "Çok fazla başarısız giriş denemesi. Lütfen 15 dakika sonra tekrar deneyin.",
+  },
+  standardHeaders: true, // Rate limit bilgilerini response header'larında döner
+  legacyHeaders: false,
+});
 
-  if (Date.now() - attempts[ip].time > 5 * 60 * 1000) {
-    attempts[ip] = { count: 0, time: Date.now() };
-  }
-
-  if (attempts[ip].count > 10) {
-    return res
-      .status(429)
-      .json({ message: "Too many requests. Try again later." });
-  }
-
-  attempts[ip].count++;
-  next();
-};
-module.exports = bruteForceGuard;
+module.exports = { loginLimiter };
