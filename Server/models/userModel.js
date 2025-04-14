@@ -1,4 +1,4 @@
-const Kullanici = require('../models/Kullanici');
+const Kullanici = require('../models/users');
 
 const getUserByUsername = async (username) => {
   const user = await Kullanici.findOne({ where: { kullanici_ad: username } });
